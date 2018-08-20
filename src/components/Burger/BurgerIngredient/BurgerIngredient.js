@@ -1,5 +1,5 @@
 import React, { Component }from 'react';
-import classes from './burgerIngredient.css';
+import classes from './BurgerIngredient.css';
 import PropTypes from 'prop-types';
 
 class BurgerIngredient extends Component {
@@ -30,7 +30,7 @@ class BurgerIngredient extends Component {
                 break;
     
             case('bacon'):
-                ingredient = <div className = {classes.bacon}></div>
+                ingredient = <div className = {classes.Bacon}></div>
                 break;
     
             case('salad'):
@@ -46,11 +46,11 @@ class BurgerIngredient extends Component {
 
 }
 
-BurgerIngredient.PropTypes = {
+BurgerIngredient.propTypes = {
     type: PropTypes.string.isRequired
 }
 
-export default burgerIngredient; 
+export default BurgerIngredient; 
 
 //It started as a function-component, a stateless component. 
 //As long as we need the prop-types we do transform it to a stateful component, with the necessary changes:
