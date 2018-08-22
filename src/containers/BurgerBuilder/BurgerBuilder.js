@@ -22,7 +22,8 @@ class burgerBuilder extends Component {
             meat: 0
         },
         totalPrice: 4,
-        purchasable: false
+        purchasable: false,
+        purchasing: false
     }
 
     updatePurchaseState (ingredients){
@@ -91,6 +92,20 @@ class burgerBuilder extends Component {
         this.updatePurchaseState (updatedIngredients);
     }
 
+    purchaseHandler = () => {
+        this.setState({purchasing: true});
+    }
+    //Simple reminder: the sintax 'purchaseHandler(){...} will report an error because it won't read
+    //the 'this'. That's why is a good idea to use ES6, arrow function, which solves it.
+
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false});
+    }
+
+    purchaseContinueHandler = () => {
+        alert('You continue!');
+    }
+
     render(){
         const disabledInfo ={
             ...this.state.ingredients
@@ -104,8 +119,11 @@ class burgerBuilder extends Component {
 
         return (
             <Auxiliary>
-                <Modal>
-                    <OrderSummary ingredients={this.state.ingredients} />
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients} 
+                        purchaseCancelled={this.purchaseCancelHandler}
+                        purchaseContinued={this.purchaseContinueHandler}/>
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
@@ -113,6 +131,7 @@ class burgerBuilder extends Component {
                     ingredientRemoved={this.removeIngredientHandler}
                     disabled={disabledInfo}
                     purchasable={this.state.purchasable}
+                    ordered={this.purchaseHandler}
                     price={this.state.totalPrice}/>
             </Auxiliary>
         );
