@@ -1,11 +1,15 @@
 import React from 'react';
 import Auxiliary from '../../hoc/Auxiliary';
-import classes from './Layout.css'
+import classes from './Layout.css';
+import Toolbar from '../Navigation/Toolbar/Toolbar';
+import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
+
 
 const layout = (props) => (
     //<> = <Auxiliary> --> latest versions of React do have an in-build higher order component such as this
     <Auxiliary>
-        <div>Toolbar, SideDrawer, Backdrop</div>
+        <Toolbar />
+        <SideDrawer />
         <main className={classes.Content}>
             {props.children}
         </main>
