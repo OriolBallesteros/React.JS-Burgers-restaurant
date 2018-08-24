@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Auxiliary from '../../hoc/Auxiliary';
+import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
@@ -119,6 +119,8 @@ class burgerBuilder extends Component {
 
         return (
             <Auxiliary>
+                {/* We do check de workFlow: willComponentUpdate, etc... on both Modal and 
+                OrderSummary Components due to one grabs the other inside */}
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
                     <OrderSummary 
                         ingredients={this.state.ingredients} 
