@@ -2,7 +2,10 @@ import React from 'react';
 import classes from './Burger.css';
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 
+//import { withRouter } from 'react-router-dom';
+
 const burger = (props) => {
+    console.log(props);
 
     //With JS provided 'Object.keys' we then got an array with the keys of the object passed
     let transformedIngredients = Object.keys(props.ingredients)
@@ -38,4 +41,6 @@ const burger = (props) => {
     );
 };
 
-export default burger; 
+export default burger;
+
+//export default withRouter(burger);  --> By defect, only those components on <Route /> enjoy 'this.props.match', with 'withRouter' we make it (this.props.match) arrive to the children components (those components called on a component used on a <Route/>)

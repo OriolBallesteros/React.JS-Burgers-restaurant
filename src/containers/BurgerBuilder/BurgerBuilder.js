@@ -122,7 +122,7 @@ class burgerBuilder extends Component {
 
     purchaseContinueHandler = () => {
         //alert('You continue!');
-        this.setState({
+        /* this.setState({
             loading: true
         });
 
@@ -155,7 +155,20 @@ class burgerBuilder extends Component {
                     loading: false,
                     purchasing: false
                 });
-            });
+            }); 
+            
+            //All this info was used when building the CONTINUE / CANCEL buttons, now we simply send the user to other page with the 'history.push() below*/
+
+        const queryParams = [];
+        for (let i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i])); /* encodeURIComponent = transform string, int... into valid URL */
+        }
+        const queryString = queryParams.join('&');
+
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        });
     }
 
     render() {
