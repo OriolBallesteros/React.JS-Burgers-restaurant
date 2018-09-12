@@ -2,17 +2,99 @@ import React, { Component } from 'react';
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.css';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import Input from '../../../components/UI/Input/Input';
 
 import axios from '../../../axios-orders';
 
 class ContactData extends Component {
 
+    /* orderElements = (type, placeholder) => {
+        return {
+            elementType: 'input',
+            elementConfig: {
+                type: type,
+                placeholder: placeholder
+            },
+            value: '',
+                validation: {
+                    required: true
+                }
+        }
+    }
+    A simple function to not hardcode all the state*/
+
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            postalCode: ''
+        orderForm: {
+            name: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your name'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false
+            },
+            street: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Street'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false
+            },
+            zipCode: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'ZIP Code'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 5,
+                    maxLength: 5
+                },
+                valid: false
+            },
+            country: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Country'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Your e-mail'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false
+            },
+            deliveryMethod: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [{ value: 'fastest', displayValue: 'Fastest' },
+                    { value: 'cheapest', displayValue: 'Cheapest' }]
+                },
+                value: ''
+            }
         },
         loading: false
     }
@@ -21,21 +103,18 @@ class ContactData extends Component {
         event.preventDefault();
 
         this.setState({ loading: true });
+
+        const formData = {};
+        for (let formElementIdentifier in this.state.orderForm){
+            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+        }
+
         //What to send to the server
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price,
+            orderData: formData
 
-            customer: {
-                name: 'Ender Wiggin',
-                address: {
-                    street: 'Battle School',
-                    zipCode: '08080',
-                    country: 'U.S.A'
-                },
-                email: 'test@test.com'
-            },
-            deliveryMethod: 'fastest'
         }
 
         //Post method to the server
@@ -51,14 +130,72 @@ class ContactData extends Component {
             });
     }
 
+    checkValidity(value, rules){
+        let isValid = true;
+        
+        if(rules.required){
+            isValid = value.trim() !== '' && isValid;
+        }
+
+        if(rules.minLength){
+            isValid = value.length >= rules.minLength  && isValid; 
+        }
+
+        if(rules.maxLength){
+            isValid = value.length <= rules.maxLength  && isValid;
+        }
+
+        return isValid; 
+    }
+
+    inputChangedHandler = (event, inputIdentifier) => {
+        //For every object in a state, we need to go deeper into the 'clonning' process to achieve a correct 'clonning' (not taking the same spot)
+        //That's why we take the entire state:
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        };
+        //Then, we need to enter into the object we really want to change.
+        const updatedFormElement = {
+            ...updatedOrderForm[inputIdentifier]
+        };
+        //As long as it is the value, we do not need to go deeper. If it was the elementConfig, an object itself, we would need to go one more level.
+
+        //Now that we are down we change the value,
+        updatedFormElement.value = event.target.value;
+
+        //(We also add the validation)
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+
+        //and we sent it up,
+        updatedOrderForm[inputIdentifier] = updatedFormElement;
+        console.log(updatedFormElement);
+        //and once it is ready, we use the setState. 
+        this.setState({ orderForm: updatedOrderForm });
+
+    }
+
     render() {
 
+        const formElementsArray = [];
+        for (let key in this.state.orderForm) {
+            formElementsArray.push({
+                id: key,
+                config: this.state.orderForm[key]
+            });
+        }
+
+
         let form = (
-            <form>
-                <input className={classes.Input} type='text' name='name' placeholder='Your Name' />
-                <input className={classes.Input} type='text' name='email' placeholder='Your Email' />
-                <input className={classes.Input} type='text' name='street' placeholder='Street' />
-                <input className={classes.Input} type='text' name='postal' placeholder='Postal Code' />
+            <form onSubmit={this.orderHandler}>
+                {formElementsArray.map(formElement =>
+                    <Input
+                        key={formElement.id}
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.value}
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)} 
+                />)}
+
                 <Button btnType='Success' clicked={this.orderHandler}>ORDER</Button>
             </form>
         );
