@@ -7,7 +7,10 @@ const button = (props) => (
         //that we can pass dinamically as easy as using an Array an then transforming into a String
         //and with the power of 'props'
         className={[classes.Button, classes[props.btnType]].join(' ')}
-        onClick={props.clicked}>{props.children}</button>
+        onClick={props.clicked}
+        disabled={props.disabled}>
+            {props.children}
+        </button>
 );
 
 export default button; 
