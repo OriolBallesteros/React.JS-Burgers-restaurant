@@ -6,22 +6,13 @@ import Input from '../../../components/UI/Input/Input';
 
 import axios from '../../../axios-orders';
 
-class ContactData extends Component {
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 
-    /* orderElements = (type, placeholder) => {
-        return {
-            elementType: 'input',
-            elementConfig: {
-                type: type,
-                placeholder: placeholder
-            },
-            value: '',
-                validation: {
-                    required: true
-                }
-        }
-    }
-    A simple function to not hardcode all the initial state*/
+import { connect } from 'react-redux';
+
+import * as actions from '../../../store/actions/index';
+
+class ContactData extends Component {
 
     state = {
         orderForm: {
@@ -104,62 +95,61 @@ class ContactData extends Component {
                 valid: true
             }
         },
-        formIsValid: false,
-        loading: false
+        formIsValid: false
+        //loading: false --> take it from here, now used in the reducer
     }
 
     orderHandler = (event) => {
         event.preventDefault();
-
-        this.setState({ loading: true });
-
         const formData = {};
-        for (let formElementIdentifier in this.state.orderForm){
+        for (let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
 
         //What to send to the server
         const order = {
-            ingredients: this.props.ingredients,
+            ingredients: this.props.ings,
             price: this.props.price,
             orderData: formData
 
         }
 
         //Post method to the server
-        axios.post('/orders.json', order)
-            .then(response => {
-                console.log(response);
-                this.setState({ loading: false });
-                this.props.history.push('/');
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({ loading: false });
-            });
+        //axios.post('/orders.json', order)
+        //    .then(response => {
+        //        console.log(response);
+        //        this.setState({ loading: false });
+        //        this.props.history.push('/');
+        //    })
+        //    .catch(error => {
+        //        console.log(error);
+        //        this.setState({ loading: false });
+        //    });
+        // --> on the order.js on action folder now
+        this.props.onOrderBurger(order);
     }
 
-    checkValidity(value, rules){
+    checkValidity(value, rules) {
         let isValid = true;
-        
-        if(!rules){
-            return true; 
+
+        if (!rules) {
+            return true;
         }
         //without this if statement, or without the 'validation: {}' in the state.deliveryMethod, the select will always report an error because then we will be passing it with a param in a function which would be undefined
 
-        if(rules.required){
+        if (rules.required) {
             isValid = value.trim() !== '' && isValid;
         }
 
-        if(rules.minLength){
-            isValid = value.length >= rules.minLength  && isValid; 
+        if (rules.minLength) {
+            isValid = value.length >= rules.minLength && isValid;
         }
 
-        if(rules.maxLength){
-            isValid = value.length <= rules.maxLength  && isValid;
+        if (rules.maxLength) {
+            isValid = value.length <= rules.maxLength && isValid;
         }
 
-        return isValid; 
+        return isValid;
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -189,7 +179,7 @@ class ContactData extends Component {
 
         //Checking if the entire form is valid
         let formIsValid = true;
-        for (let inputIdentifier in updatedOrderForm){
+        for (let inputIdentifier in updatedOrderForm) {
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
         }
 
@@ -208,7 +198,6 @@ class ContactData extends Component {
             });
         }
 
-
         let form = (
             <form onSubmit={this.orderHandler}>
                 {formElementsArray.map(formElement =>
@@ -220,16 +209,16 @@ class ContactData extends Component {
                         invalid={!formElement.config.valid}
                         shouldValidate={formElement.config.validation}
                         touched={formElement.config.touched}
-                        changed={(event) => this.inputChangedHandler(event, formElement.id)} 
-                />)}
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}
+                    />)}
 
-                <Button btnType='Success' 
+                <Button btnType='Success'
                     clicked={this.orderHandler}
                     disabled={!this.state.formIsValid}>ORDER</Button>
             </form>
         );
 
-        if (this.state.loading) {
+        if (this.props.loading) {
             form = <Spinner />;
         }
 
@@ -243,4 +232,18 @@ class ContactData extends Component {
 
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        loading: state.order.loading
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
