@@ -10,7 +10,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 import { connect } from 'react-redux';
-import * as burgerBuilderActions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 
 //const INGREDIENT_PRICES = {
 //    salad: 0.5,
@@ -145,7 +145,7 @@ class burgerBuilder extends Component {
         //    search: '?' + queryString
         //});
         //--> With redux there's no need of query to pass info. Redux those it.
-
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
 
@@ -222,9 +222,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingrName) => dispatch(burgerBuilderActions.addIngredient(ingrName)),
-        onRemoveIngredient: (ingrName) => dispatch(burgerBuilderActions.removeIngredient(ingrName)),
-        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
+        onIngredientAdded: (ingrName) => dispatch(actions.addIngredient(ingrName)),
+        onRemoveIngredient: (ingrName) => dispatch(actions.removeIngredient(ingrName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     };
 };
 
