@@ -123,7 +123,11 @@ class burgerBuilder extends Component {
 // --> These two functions were managing the state.ingredients and the state.totalPrice. Once the reducer manage those already, we do not need these functions anymore. 
 
     purchaseHandler = () => {
-        this.setState({ purchasing: true });
+        if(this.props.isAuthenticated){
+            this.setState({ purchasing: true });
+        }else{
+            this.props.history.push('/auth');
+        }
     }
     //Simple reminder: the sintax 'purchaseHandler(){...} will report an error because it won't read
     //the 'this'. That's why is a good idea to use ES6, arrow function, which solves it.
@@ -173,6 +177,7 @@ class burgerBuilder extends Component {
                         disabled={disabledInfo}
                         purchasable={this.updatePurchaseState(this.props.ings)}
                         ordered={this.purchaseHandler}
+                        isAuth={this.props.isAuthenticated}
                         price={this.props.price} />
                 </Auxiliary>
             );
@@ -216,7 +221,8 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     };
 };
 

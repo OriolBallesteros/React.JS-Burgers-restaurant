@@ -4,6 +4,8 @@ import classes from './Layout.css';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 
+import { connect } from 'react-redux';
+
 
 class Layout extends Component {
 
@@ -19,7 +21,7 @@ class Layout extends Component {
 
     sideDrawerToggleHandler = () => {
         this.setState((prevState) => {
-            return {showSideDrawer: !prevState.showSideDrawer};
+            return { showSideDrawer: !prevState.showSideDrawer };
         });
 
         //this.setState({ showSideDrawer: !this.state.showSideDrawer });
@@ -32,9 +34,12 @@ class Layout extends Component {
         return (
             //<> = <Auxiliary> --> latest versions of React do have an in-build higher order component such as this
             <Auxiliary>
-                <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler}/>
+                <Toolbar 
+                    isAuth={this.props.isAuthenticated}
+                    drawerToggleClicked={this.sideDrawerToggleHandler} />
 
                 <SideDrawer
+                    isAuth={this.props.isAuthenticated}
                     open={this.state.showSideDrawer}
                     closed={this.sideDrawerClosedHandler} />
 
@@ -46,5 +51,10 @@ class Layout extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.auth.token !== null
+    };
+};
 
-export default Layout; 
+export default connect(mapStateToProps)(Layout); 
