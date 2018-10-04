@@ -15,10 +15,6 @@ class Modal extends Component {
                 //without that second line, <Modal /> will not listen to changes due to http calls
     }
 
-    //componentWillUpdate(){
-    //    console.log('Modal - willUpdate');
-    //}
-
     render() {
         return (
             <Auxiliary>

@@ -13,8 +13,6 @@ const order = (props) => {
         );
     }
 
-    console.log('ingArray', ingredients);
-
     const ingredientOutput = ingredients.map(ig => {
         return <span
             key={ig.name}

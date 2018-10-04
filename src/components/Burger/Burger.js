@@ -5,7 +5,6 @@ import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 //import { withRouter } from 'react-router-dom';
 
 const burger = (props) => {
-    console.log(props);
 
     //With JS provided 'Object.keys' we then got an array with the keys of the object passed
     let transformedIngredients = Object.keys(props.ingredients)

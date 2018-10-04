@@ -4,11 +4,6 @@ import Button from '../../UI/Button/Button';
 
 
 class OrderSummary extends Component {
-    //This could be a stateless component. Modal component grabs it inside on Layout.js
-    //componentWillUpdate(){
-    //    console.log('OrderSummary - willUpdate');
-    //}
-
     render() {
         const ingredientSummary = Object.keys(this.props.ingredients)
         .map(igKey => {

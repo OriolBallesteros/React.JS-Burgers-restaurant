@@ -12,6 +12,8 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../../store/actions/index';
 
+import { updateObject, checkValidity } from '../../../shared/utility';
+
 class ContactData extends Component {
 
     state = {
@@ -130,61 +132,23 @@ class ContactData extends Component {
         this.props.onOrderBurger(order, this.props.token);
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-
-        if (!rules) {
-            return true;
-        }
-        //without this if statement, or without the 'validation: {}' in the state.deliveryMethod, the select will always report an error because then we will be passing it with a param in a function which would be undefined
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-
-        return isValid;
-    }
-
     inputChangedHandler = (event, inputIdentifier) => {
-        //For every object in a state, we need to go deeper into the 'clonning' process to achieve a correct 'clonning' (not taking the same spot)
-        //That's why we take the entire state:
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        };
-        //Then, we need to enter into the object we really want to change.
-        const updatedFormElement = {
-            ...updatedOrderForm[inputIdentifier]
-        };
-        //As long as it is the value, we do not need to go deeper. If it was the elementConfig, an object itself, we would need to go one more level.
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: event.target.value,
+            valid: checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true
+        }); 
 
-        //Now that we are down we change the value,
-        updatedFormElement.value = event.target.value;
-
-        //(We also add the validation)
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-
-        //(we only want the red input on the selected ones)
-        updatedFormElement.touched = true;
-
-        //and we sent it up,
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
-        console.log(updatedFormElement);
-
-        //Checking if the entire form is valid
+        const updatedOrderForm = updateObject(this.state.orderForm,{ 
+            [inputIdentifier]: updatedFormElement
+        });
+        
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
         }
 
-        //and once it is ready, we use the setState. 
+
         this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 
     }
