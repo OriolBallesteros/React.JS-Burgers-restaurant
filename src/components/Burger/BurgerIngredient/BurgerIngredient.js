@@ -51,7 +51,3 @@ BurgerIngredient.propTypes = {
 }
 
 export default BurgerIngredient; 
-
-//It started as a function-component, a stateless component. 
-//As long as we need the prop-types we do transform it to a stateful component, with the necessary changes:
-// props --> this.props; all inside render function.
