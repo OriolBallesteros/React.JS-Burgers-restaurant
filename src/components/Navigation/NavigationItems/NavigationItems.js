@@ -16,5 +16,3 @@ const navigationItems = (props) => (
 );
 
 export default navigationItems; 
-
-//on line 7 --> active={true} == active
