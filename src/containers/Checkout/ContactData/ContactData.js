@@ -98,7 +98,6 @@ class ContactData extends Component {
             }
         },
         formIsValid: false
-        //loading: false --> take it from here, now used in the reducer
     }
 
     orderHandler = (event) => {
@@ -117,18 +116,6 @@ class ContactData extends Component {
 
         }
 
-        //Post method to the server
-        //axios.post('/orders.json', order)
-        //    .then(response => {
-        //        console.log(response);
-        //        this.setState({ loading: false });
-        //        this.props.history.push('/');
-        //    })
-        //    .catch(error => {
-        //        console.log(error);
-        //        this.setState({ loading: false });
-        //    });
-        // --> on the order.js on action folder now
         this.props.onOrderBurger(order, this.props.token);
     }
 
