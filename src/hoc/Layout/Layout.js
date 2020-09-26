@@ -23,11 +23,6 @@ class Layout extends Component {
         this.setState((prevState) => {
             return { showSideDrawer: !prevState.showSideDrawer };
         });
-
-        //this.setState({ showSideDrawer: !this.state.showSideDrawer });
-        //It won't work 'cause of the asynchronous nature of it. We must use the 'prevState'
-        //as above. The clean way to setting the state when it depends on the old state. 
-
     }
 
     render() {
